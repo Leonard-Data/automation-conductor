@@ -1,6 +1,6 @@
-
 import reflex as rx
 from typing import List, Optional
+from dataverse_test import dataverse_test
 
 # Define theme and styles similar to our Tailwind setup
 class AutomationTheme(rx.Theme):
@@ -131,6 +131,16 @@ def mobile_menu() -> rx.Component:
                 _hover={"background": "gray800"},
                 on_click=lambda: setattr(State, "is_mobile_menu_open", False),
             ),
+            rx.link(
+                rx.hstack(rx.icon("database"), rx.text("Dataverse"), spacing="2"),
+                href="/dataverse",
+                width="100%",
+                padding="2",
+                padding_x="4",
+                border_radius="md",
+                _hover={"background": "gray800"},
+                on_click=lambda: setattr(State, "is_mobile_menu_open", False),
+            ),
             spacing="4",
             align_items="stretch",
             padding="4",
@@ -191,6 +201,14 @@ def sidebar() -> rx.Component:
                     rx.link(
                         rx.hstack(rx.icon("play"), rx.text("Processes"), spacing="3"),
                         href="/processes",
+                        width="100%",
+                        padding="2",
+                        border_radius="md",
+                        _hover={"background": "gray800"},
+                    ),
+                    rx.link(
+                        rx.hstack(rx.icon("database"), rx.text("Dataverse"), spacing="3"),
+                        href="/dataverse",
                         width="100%",
                         padding="2",
                         border_radius="md",
@@ -304,6 +322,7 @@ def layout(content: rx.Component) -> rx.Component:
 
 # Example page content to test the layout
 def index() -> rx.Component:
+    """Dashboard page."""
     return rx.vstack(
         rx.heading("Dashboard", size="lg"),
         rx.text("Welcome to the Automation Conductor"),
@@ -329,8 +348,7 @@ app = rx.App(theme=AutomationTheme)
 
 # Define pages
 app.add_page(index, route="/", title="Dashboard - Automation Conductor")
-
-# Add more pages here as we convert more of the application
+app.add_page(dataverse_test, route="/dataverse", title="Dataverse Connection - Automation Conductor")
 
 # Run the app
 if __name__ == "__main__":
