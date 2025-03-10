@@ -38,3 +38,23 @@ export interface ApiExecutionResponse {
   status: 'queued' | 'started' | 'failed';
   message?: string;
 }
+
+export interface NewMachineForm {
+  name: string;
+  ipAddress: string;
+  description: string;
+  status: MachineStatus;
+}
+
+export interface NewProcessForm {
+  name: string;
+  description: string;
+  type: string;
+  machineId: string;
+}
+
+export interface ProcessAssignmentForm {
+  processId: string;
+  machineId: string;
+  parameters?: Record<string, any>;
+}

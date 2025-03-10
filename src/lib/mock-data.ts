@@ -1,5 +1,5 @@
 
-import { Machine, Process } from "@/types/orchestrator";
+import { Machine, Process, NewMachineForm, NewProcessForm, ProcessAssignmentForm } from "@/types/orchestrator";
 
 // Mock Machines Data
 export const machines: Machine[] = [
@@ -150,6 +150,77 @@ export const getMachineById = (id: string) => machines.find(machine => machine.i
 export const getProcesses = () => processes;
 export const getProcessesByMachineId = (machineId: string) => processes.filter(process => process.machineId === machineId);
 export const getProcessById = (id: string) => processes.find(process => process.id === id);
+
+// Function to add a new machine
+export const addMachine = (machineData: NewMachineForm) => {
+  const newMachine: Machine = {
+    id: `machine-${Date.now()}`,
+    name: machineData.name,
+    status: machineData.status,
+    ipAddress: machineData.ipAddress,
+    lastSeen: new Date().toISOString(),
+    description: machineData.description,
+    processCount: 0,
+    cpuUsage: 0,
+    memoryUsage: 0
+  };
+  
+  machines.push(newMachine);
+  return newMachine;
+};
+
+// Function to add a new process
+export const addProcess = (processData: NewProcessForm) => {
+  const newProcess: Process = {
+    id: `process-${Date.now()}`,
+    name: processData.name,
+    status: 'pending',
+    machineId: processData.machineId,
+    startTime: new Date(Date.now() + 60000).toISOString(), // Scheduled to start in 1 minute
+    description: processData.description,
+    type: processData.type
+  };
+  
+  processes.push(newProcess);
+  
+  // Update machine process count
+  const machine = getMachineById(processData.machineId);
+  if (machine) {
+    machine.processCount += 1;
+  }
+  
+  return newProcess;
+};
+
+// Function to assign process to machine and run it
+export const assignAndRunProcess = (assignmentData: ProcessAssignmentForm) => {
+  const process = getProcessById(assignmentData.processId);
+  const machine = getMachineById(assignmentData.machineId);
+  
+  if (!process || !machine) {
+    return {
+      success: false,
+      message: "Process or machine not found"
+    };
+  }
+  
+  // Update the process machine and status
+  process.machineId = assignmentData.machineId;
+  process.status = 'running';
+  process.startTime = new Date().toISOString();
+  
+  // Update the machine process count and status if needed
+  if (machine.status === 'idle') {
+    machine.status = 'active';
+  }
+  machine.processCount += 1;
+  
+  return {
+    success: true,
+    message: `Process ${process.name} assigned to ${machine.name} and started running`,
+    process
+  };
+};
 
 // Function to simulate API execution
 export const executeProcessApi = (processId: string, parameters: Record<string, any> = {}) => {

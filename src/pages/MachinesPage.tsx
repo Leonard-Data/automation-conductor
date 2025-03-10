@@ -9,6 +9,7 @@ import {
   Server, 
   Activity,
   RefreshCw,
+  PlusCircle,
 } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { Card, CardContent } from "@/components/ui/card";
@@ -66,15 +67,23 @@ const MachinesPage = () => {
               Manage your automation machines and their status
             </p>
           </div>
-          <Button 
-            onClick={handleRefresh} 
-            variant="outline" 
-            className="self-start"
-            disabled={isRefreshing}
-          >
-            <RefreshCw className={`mr-2 h-4 w-4 ${isRefreshing ? 'animate-spin' : ''}`} />
-            Refresh
-          </Button>
+          <div className="flex space-x-2">
+            <Button 
+              onClick={handleRefresh} 
+              variant="outline" 
+              className="self-start"
+              disabled={isRefreshing}
+            >
+              <RefreshCw className={`mr-2 h-4 w-4 ${isRefreshing ? 'animate-spin' : ''}`} />
+              Refresh
+            </Button>
+            <Button asChild className="self-start">
+              <Link to="/machines/add">
+                <PlusCircle className="mr-2 h-4 w-4" />
+                Add Machine
+              </Link>
+            </Button>
+          </div>
         </div>
 
         {/* Filters */}
@@ -117,6 +126,12 @@ const MachinesPage = () => {
               <p className="mt-2 text-gray-500">
                 Try adjusting your search or filter to find what you're looking for.
               </p>
+              <Button asChild className="mt-4">
+                <Link to="/machines/add">
+                  <PlusCircle className="mr-2 h-4 w-4" />
+                  Add Machine
+                </Link>
+              </Button>
             </div>
           )}
         </div>
