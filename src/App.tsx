@@ -8,6 +8,7 @@ import Index from "./pages/Index";
 import MachinesPage from "./pages/MachinesPage";
 import ProcessesPage from "./pages/ProcessesPage";
 import MachineDetailPage from "./pages/MachineDetailPage";
+import ProcessDetailPage from "./pages/ProcessDetailPage";
 import AddMachinePage from "./pages/AddMachinePage";
 import AddProcessPage from "./pages/AddProcessPage";
 import AssignProcessPage from "./pages/AssignProcessPage";
@@ -26,6 +27,7 @@ const App = () => (
           <Route path="/machines" element={<MachinesPage />} />
           <Route path="/processes" element={<ProcessesPage />} />
           <Route path="/machines/:id" element={<MachineDetailPage />} />
+          <Route path="/processes/:id" element={<ProcessDetailPage />} />
           <Route path="/machines/add" element={<AddMachinePage />} />
           <Route path="/processes/add" element={<AddProcessPage />} />
           <Route path="/processes/assign" element={<AssignProcessPage />} />

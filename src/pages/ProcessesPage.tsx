@@ -1,5 +1,6 @@
 
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { getProcesses, getMachines } from "@/lib/mock-data";
 import { Process } from "@/types/orchestrator";
 import { 
@@ -12,7 +13,8 @@ import {
   RefreshCw,
   FileText,
   Pause,
-  SkipForward
+  SkipForward,
+  Eye
 } from "lucide-react";
 import {
   Table,
@@ -112,15 +114,29 @@ const ProcessesPage = () => {
               Manage and monitor your automation processes
             </p>
           </div>
-          <Button 
-            onClick={handleRefresh} 
-            variant="outline" 
-            className="self-start"
-            disabled={isRefreshing}
-          >
-            <RefreshCw className={`mr-2 h-4 w-4 ${isRefreshing ? 'animate-spin' : ''}`} />
-            Refresh
-          </Button>
+          <div className="flex gap-2">
+            <Link to="/processes/add">
+              <Button variant="default">
+                <Play className="mr-2 h-4 w-4" />
+                Add Process
+              </Button>
+            </Link>
+            <Link to="/processes/assign">
+              <Button variant="outline">
+                <RefreshCw className="mr-2 h-4 w-4" />
+                Assign Process
+              </Button>
+            </Link>
+            <Button 
+              onClick={handleRefresh} 
+              variant="outline" 
+              className="self-start"
+              disabled={isRefreshing}
+            >
+              <RefreshCw className={`mr-2 h-4 w-4 ${isRefreshing ? 'animate-spin' : ''}`} />
+              Refresh
+            </Button>
+          </div>
         </div>
 
         {/* Filters */}
@@ -282,7 +298,12 @@ const ProcessRow = ({ process, machines, onStart, onStop, onSkip, formatDate }: 
     <TableRow>
       <TableCell className="font-medium">
         <div>
-          {process.name}
+          <Link 
+            to={`/processes/${process.id}`}
+            className="text-blue-600 hover:underline dark:text-blue-400"
+          >
+            {process.name}
+          </Link>
           <div className="text-xs text-gray-500 mt-1">{process.type}</div>
         </div>
       </TableCell>
@@ -292,7 +313,16 @@ const ProcessRow = ({ process, machines, onStart, onStop, onSkip, formatDate }: 
           {process.status.charAt(0).toUpperCase() + process.status.slice(1)}
         </span>
       </TableCell>
-      <TableCell>{machine?.name || "Unknown"}</TableCell>
+      <TableCell>
+        {machine ? (
+          <Link 
+            to={`/machines/${machine.id}`}
+            className="text-blue-600 hover:underline dark:text-blue-400"
+          >
+            {machine.name}
+          </Link>
+        ) : "Unknown"}
+      </TableCell>
       <TableCell>
         <div className="flex items-center">
           <Calendar className="h-3 w-3 mr-1 text-gray-500" />
@@ -302,6 +332,12 @@ const ProcessRow = ({ process, machines, onStart, onStop, onSkip, formatDate }: 
       <TableCell>{getDuration()}</TableCell>
       <TableCell className="text-right">
         <div className="flex justify-end space-x-2">
+          <Link to={`/processes/${process.id}`}>
+            <Button size="sm" variant="outline">
+              <Eye className="h-4 w-4" />
+            </Button>
+          </Link>
+          
           {(process.status === "pending" || process.status === "stopped") && (
             <Button size="sm" variant="outline" onClick={onStart}>
               <Play className="h-4 w-4" />
