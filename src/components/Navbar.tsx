@@ -6,7 +6,8 @@ import {
   Play, 
   Activity, 
   Menu,
-  X
+  X,
+  UserRound
 } from "lucide-react";
 import { useState } from "react";
 
@@ -46,6 +47,10 @@ const Navbar = () => {
             <Play className="h-5 w-5" />
             <span>Processes</span>
           </Link>
+          <Link to="/agents" className="flex items-center space-x-2 hover:text-status-active transition-colors">
+            <UserRound className="h-5 w-5" />
+            <span>Agents</span>
+          </Link>
         </div>
       </div>
       
@@ -75,6 +80,14 @@ const Navbar = () => {
           >
             <Play className="h-5 w-5" />
             <span>Processes</span>
+          </Link>
+          <Link 
+            to="/agents" 
+            className="block py-2 px-4 hover:bg-gray-700 rounded-md flex items-center space-x-2"
+            onClick={() => setIsMenuOpen(false)}
+          >
+            <UserRound className="h-5 w-5" />
+            <span>Agents</span>
           </Link>
         </div>
       )}

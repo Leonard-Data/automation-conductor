@@ -1,5 +1,5 @@
-
 import { Machine, Process, NewMachineForm, NewProcessForm, ProcessAssignmentForm } from "@/types/orchestrator";
+import { Agent, AgentTypeCount, NewAgentForm } from "@/types/agent";
 
 // Mock Machines Data
 export const machines: Machine[] = [
@@ -143,6 +143,127 @@ export const processes: Process[] = [
     type: "Marketing"
   }
 ];
+
+// Mock Agents Data
+export const agents: Agent[] = [
+  {
+    id: "agent-001",
+    name: "DataSyncAgent",
+    status: "active",
+    version: "1.2.3",
+    type: "Data Sync",
+    machineId: "machine-001",
+    lastUpdated: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+    description: "Handles data synchronization between systems",
+    configuration: {
+      syncInterval: "30m",
+      retryAttempts: 3,
+      sources: ["CRM", "ERP"]
+    }
+  },
+  {
+    id: "agent-002",
+    name: "LogMonitorAgent",
+    status: "active",
+    version: "2.0.1",
+    type: "Monitoring",
+    machineId: "machine-003",
+    lastUpdated: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+    description: "Monitors and analyzes system logs",
+    configuration: {
+      alertThreshold: "error",
+      scanFrequency: "5m",
+      retentionDays: 30
+    }
+  },
+  {
+    id: "agent-003",
+    name: "ReportGenerator",
+    status: "inactive",
+    version: "1.0.5",
+    type: "Reporting",
+    machineId: "machine-002",
+    lastUpdated: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
+    description: "Generates scheduled reports",
+    configuration: {
+      format: "PDF",
+      schedule: "daily",
+      recipients: ["admin@example.com"]
+    }
+  },
+  {
+    id: "agent-004",
+    name: "BackupAgent",
+    status: "error",
+    version: "3.1.2",
+    type: "Backup",
+    machineId: "machine-004",
+    lastUpdated: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+    description: "Manages automated backups",
+    configuration: {
+      backupTime: "02:00",
+      compressionLevel: "high",
+      destination: "s3://backups"
+    }
+  },
+  {
+    id: "agent-005",
+    name: "ApiIntegrationAgent",
+    status: "updating",
+    version: "1.1.7",
+    type: "Integration",
+    machineId: "machine-005",
+    lastUpdated: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
+    description: "Manages third-party API integrations",
+    configuration: {
+      rateLimit: 100,
+      timeout: "30s",
+      authMethod: "OAuth2"
+    }
+  }
+];
+
+// Helper functions for agents
+export const getAgents = () => agents;
+export const getAgentById = (id: string) => agents.find(agent => agent.id === id);
+export const getAgentsByMachineId = (machineId: string) => agents.filter(agent => agent.machineId === machineId);
+export const getAgentsByType = (type: string) => agents.filter(agent => agent.type === type);
+
+// Get counts of agents by type
+export const getAgentTypeCounts = (): AgentTypeCount[] => {
+  const typeCounts: Record<string, number> = {};
+  
+  agents.forEach(agent => {
+    if (typeCounts[agent.type]) {
+      typeCounts[agent.type]++;
+    } else {
+      typeCounts[agent.type] = 1;
+    }
+  });
+  
+  return Object.entries(typeCounts).map(([type, count]) => ({
+    type,
+    count
+  }));
+};
+
+// Add a new agent
+export const addAgent = (agentData: NewAgentForm) => {
+  const newAgent: Agent = {
+    id: `agent-${Date.now()}`,
+    name: agentData.name,
+    status: 'inactive',
+    version: '1.0.0',
+    type: agentData.type,
+    machineId: agentData.machineId,
+    lastUpdated: new Date().toISOString(),
+    description: agentData.description,
+    configuration: agentData.configuration
+  };
+  
+  agents.push(newAgent);
+  return newAgent;
+};
 
 // Helper functions to get data
 export const getMachines = () => machines;

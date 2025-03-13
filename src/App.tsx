@@ -12,6 +12,9 @@ import ProcessDetailPage from "./pages/ProcessDetailPage";
 import AddMachinePage from "./pages/AddMachinePage";
 import AddProcessPage from "./pages/AddProcessPage";
 import AssignProcessPage from "./pages/AssignProcessPage";
+import AgentsPage from "./pages/AgentsPage";
+import AgentDetailPage from "./pages/AgentDetailPage";
+import AddAgentPage from "./pages/AddAgentPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -31,6 +34,9 @@ const App = () => (
           <Route path="/machines/add" element={<AddMachinePage />} />
           <Route path="/processes/add" element={<AddProcessPage />} />
           <Route path="/processes/assign" element={<AssignProcessPage />} />
+          <Route path="/agents" element={<AgentsPage />} />
+          <Route path="/agents/:id" element={<AgentDetailPage />} />
+          <Route path="/agents/add" element={<AddAgentPage />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
