@@ -1,4 +1,3 @@
-
 import { useParams, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { getAgentById, getProcessesByMachineIds, getMachinesByIds } from '@/lib/mock-data';
@@ -26,7 +25,6 @@ const ConfigCard = ({ title, value }: ConfigCardProps) => (
   </Card>
 );
 
-// Mock data for agent metrics - in a real app, fetch from API
 const generateMetricsData = () => {
   const now = new Date();
   const data = [];

@@ -152,7 +152,7 @@ export const agents: Agent[] = [
     status: "active",
     version: "1.2.3",
     type: "Data Sync",
-    machineId: "machine-001",
+    machineIds: ["machine-001"],
     lastUpdated: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
     description: "Handles data synchronization between systems",
     configuration: {
@@ -167,7 +167,7 @@ export const agents: Agent[] = [
     status: "active",
     version: "2.0.1",
     type: "Monitoring",
-    machineId: "machine-003",
+    machineIds: ["machine-003"],
     lastUpdated: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
     description: "Monitors and analyzes system logs",
     configuration: {
@@ -182,7 +182,7 @@ export const agents: Agent[] = [
     status: "inactive",
     version: "1.0.5",
     type: "Reporting",
-    machineId: "machine-002",
+    machineIds: ["machine-002"],
     lastUpdated: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
     description: "Generates scheduled reports",
     configuration: {
@@ -197,7 +197,7 @@ export const agents: Agent[] = [
     status: "error",
     version: "3.1.2",
     type: "Backup",
-    machineId: "machine-004",
+    machineIds: ["machine-004"],
     lastUpdated: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
     description: "Manages automated backups",
     configuration: {
@@ -212,7 +212,7 @@ export const agents: Agent[] = [
     status: "updating",
     version: "1.1.7",
     type: "Integration",
-    machineId: "machine-005",
+    machineIds: ["machine-005"],
     lastUpdated: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
     description: "Manages third-party API integrations",
     configuration: {
@@ -226,7 +226,7 @@ export const agents: Agent[] = [
 // Helper functions for agents
 export const getAgents = () => agents;
 export const getAgentById = (id: string) => agents.find(agent => agent.id === id);
-export const getAgentsByMachineId = (machineId: string) => agents.filter(agent => agent.machineId === machineId);
+export const getAgentsByMachineId = (machineId: string) => agents.filter(agent => agent.machineIds.includes(machineId));
 export const getAgentsByType = (type: string) => agents.filter(agent => agent.type === type);
 
 // Get counts of agents by type
@@ -255,7 +255,7 @@ export const addAgent = (agentData: NewAgentForm) => {
     status: 'inactive',
     version: '1.0.0',
     type: agentData.type,
-    machineId: agentData.machineId,
+    machineIds: agentData.machineIds,
     lastUpdated: new Date().toISOString(),
     description: agentData.description,
     configuration: agentData.configuration
@@ -361,4 +361,13 @@ export const executeProcessApi = (processId: string, parameters: Record<string, 
     status: "queued" as const,
     message: `Process ${process.name} queued for execution with parameters: ${JSON.stringify(parameters)}`
   };
+};
+
+// New helper functions for multi-machine support
+export const getMachinesByIds = (machineIds: string[]): Machine[] => {
+  return machines.filter(machine => machineIds.includes(machine.id));
+};
+
+export const getProcessesByMachineIds = (machineIds: string[]): Process[] => {
+  return processes.filter(process => machineIds.includes(process.machineId));
 };

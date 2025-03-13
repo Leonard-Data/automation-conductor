@@ -124,7 +124,7 @@ const AgentsPage = () => {
                         <span className="text-sm text-muted-foreground">Machine:</span>
                         <div className="flex items-center gap-1">
                           <Server className="h-3.5 w-3.5 text-muted-foreground" />
-                          <Link to={`/machines/${agent.machineId}`} className="text-sm text-primary hover:underline">
+                          <Link to={`/machines/${agent.machineIds[0]}`} className="text-sm text-primary hover:underline">
                             View Machine
                           </Link>
                         </div>
