@@ -6,7 +6,8 @@ import {
   Plus, 
   Filter, 
   Search,
-  Server
+  Clock,
+  Timer
 } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { getAgents, getAgentTypeCounts } from '@/lib/mock-data';
@@ -48,6 +49,33 @@ const AgentsPage = () => {
       case 'updating': return 'bg-status-pending';
       default: return 'bg-gray-500';
     }
+  };
+  
+  // Get formatted last runtime
+  const getLastRuntime = (agent: any) => {
+    // In a real application, this would come from the agent data
+    // For now, we'll use the lastUpdated field as a proxy
+    const lastRunDate = new Date(agent.lastUpdated);
+    const now = new Date();
+    const diffTime = Math.abs(now.getTime() - lastRunDate.getTime());
+    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+    
+    if (diffDays === 0) {
+      return "Today";
+    } else if (diffDays === 1) {
+      return "Yesterday";
+    } else {
+      return `${diffDays} days ago`;
+    }
+  };
+  
+  // Get total runtime (mocked for demo)
+  const getTotalRuntime = (agent: any) => {
+    // In a real application, this would come from the agent data
+    // For this demo, we'll generate a random runtime based on agent ID
+    const hash = agent.id.split('-')[1];
+    const hours = parseInt(hash) % 100 + 10;
+    return `${hours} hours`;
   };
   
   return (
@@ -121,12 +149,18 @@ const AgentsPage = () => {
                       </div>
                       
                       <div className="flex items-center justify-between">
-                        <span className="text-sm text-muted-foreground">Machine:</span>
+                        <span className="text-sm text-muted-foreground">Last Run:</span>
                         <div className="flex items-center gap-1">
-                          <Server className="h-3.5 w-3.5 text-muted-foreground" />
-                          <Link to={`/machines/${agent.machineIds[0]}`} className="text-sm text-primary hover:underline">
-                            View Machine
-                          </Link>
+                          <Clock className="h-3.5 w-3.5 text-muted-foreground" />
+                          <span className="text-sm">{getLastRuntime(agent)}</span>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-muted-foreground">Total Runtime:</span>
+                        <div className="flex items-center gap-1">
+                          <Timer className="h-3.5 w-3.5 text-muted-foreground" />
+                          <span className="text-sm">{getTotalRuntime(agent)}</span>
                         </div>
                       </div>
                       
