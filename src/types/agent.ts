@@ -7,7 +7,7 @@ export interface Agent {
   status: AgentStatus;
   version: string;
   type: string;
-  machineId: string;
+  machineIds: string[];  // Changed from machineId to machineIds array
   lastUpdated: string;
   description: string;
   configuration: Record<string, any>;
@@ -21,7 +21,7 @@ export interface AgentTypeCount {
 export interface NewAgentForm {
   name: string;
   type: string;
-  machineId: string;
+  machineIds: string[];  // Changed from machineId to machineIds array
   description: string;
   configuration: Record<string, any>;
 }

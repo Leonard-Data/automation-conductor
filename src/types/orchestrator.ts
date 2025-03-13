@@ -56,5 +56,6 @@ export interface NewProcessForm {
 export interface ProcessAssignmentForm {
   processId: string;
   machineId: string;
+  agentId?: string;
   parameters?: Record<string, any>;
 }

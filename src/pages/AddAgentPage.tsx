@@ -10,15 +10,18 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
-import { ArrowLeft, Plus, Trash, Clipboard } from 'lucide-react';
+import { ArrowLeft, Plus, Trash, Clipboard, X } from 'lucide-react';
 import { toast } from 'sonner';
+import { Badge } from '@/components/ui/badge';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Machine } from '@/types/orchestrator';
 
 const AddAgentPage = () => {
   const navigate = useNavigate();
   const [form, setForm] = useState({
     name: '',
     type: '',
-    machineId: '',
+    machineIds: [] as string[],
     description: '',
     configuration: {}
   });
@@ -79,7 +82,7 @@ const AddAgentPage = () => {
     e.preventDefault();
     
     // Validate form
-    if (!form.name.trim() || !form.type || !form.machineId) {
+    if (!form.name.trim() || !form.type || form.machineIds.length === 0) {
       toast.error('Please fill in all required fields');
       return;
     }
@@ -97,6 +100,26 @@ const AddAgentPage = () => {
       ...prev,
       [name]: value
     }));
+  };
+
+  const handleAddMachine = (machineId: string) => {
+    if (!form.machineIds.includes(machineId)) {
+      setForm(prev => ({
+        ...prev,
+        machineIds: [...prev.machineIds, machineId]
+      }));
+    }
+  };
+
+  const handleRemoveMachine = (machineId: string) => {
+    setForm(prev => ({
+      ...prev,
+      machineIds: prev.machineIds.filter(id => id !== machineId)
+    }));
+  };
+
+  const getSelectedMachines = (): Machine[] => {
+    return machines.filter(machine => form.machineIds.includes(machine.id));
   };
   
   return (
@@ -153,22 +176,50 @@ const AddAgentPage = () => {
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor="machineId">Machine Assignment <span className="text-red-500">*</span></Label>
-                  <Select 
-                    value={form.machineId} 
-                    onValueChange={(value) => setForm(prev => ({ ...prev, machineId: value }))}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select a machine" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {machines.map(machine => (
-                        <SelectItem key={machine.id} value={machine.id}>
-                          {machine.name} ({machine.status})
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <Label>Machine Assignment <span className="text-red-500">*</span></Label>
+                  <div className="flex flex-col space-y-4">
+                    <Select 
+                      onValueChange={handleAddMachine}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select machines to add" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {machines
+                          .filter(machine => !form.machineIds.includes(machine.id))
+                          .map(machine => (
+                            <SelectItem key={machine.id} value={machine.id}>
+                              {machine.name} ({machine.status})
+                            </SelectItem>
+                          ))
+                        }
+                      </SelectContent>
+                    </Select>
+                    
+                    <div className="border rounded-md p-3">
+                      <p className="text-sm text-muted-foreground mb-2">Selected Machines:</p>
+                      {form.machineIds.length > 0 ? (
+                        <ScrollArea className="max-h-32">
+                          <div className="flex flex-wrap gap-2">
+                            {getSelectedMachines().map(machine => (
+                              <Badge key={machine.id} variant="secondary" className="flex items-center gap-1">
+                                {machine.name}
+                                <button 
+                                  type="button" 
+                                  onClick={() => handleRemoveMachine(machine.id)}
+                                  className="ml-1 text-gray-400 hover:text-gray-700"
+                                >
+                                  <X className="h-3 w-3" />
+                                </button>
+                              </Badge>
+                            ))}
+                          </div>
+                        </ScrollArea>
+                      ) : (
+                        <p className="text-sm text-muted-foreground">No machines selected</p>
+                      )}
+                    </div>
+                  </div>
                 </div>
                 
                 <div className="space-y-2">

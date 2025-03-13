@@ -14,7 +14,8 @@ import {
   FileText,
   Pause,
   SkipForward,
-  Eye
+  Eye,
+  CalendarClock
 } from "lucide-react";
 import {
   Table,
@@ -123,8 +124,8 @@ const ProcessesPage = () => {
             </Link>
             <Link to="/processes/assign">
               <Button variant="outline">
-                <RefreshCw className="mr-2 h-4 w-4" />
-                Assign Process
+                <CalendarClock className="mr-2 h-4 w-4" />
+                Schedule Process
               </Button>
             </Link>
             <Button 

@@ -1,7 +1,7 @@
 
 import { useParams, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { getAgentById, getProcessesByMachineId, getMachineById } from '@/lib/mock-data';
+import { getAgentById, getProcessesByMachineIds, getMachinesByIds } from '@/lib/mock-data';
 import Layout from '@/components/Layout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -55,16 +55,16 @@ const AgentDetailPage = () => {
     enabled: !!agentId,
   });
   
-  const { data: machine } = useQuery({
-    queryKey: ['machine', agent?.machineId],
-    queryFn: () => getMachineById(agent?.machineId || ''),
-    enabled: !!agent?.machineId,
+  const { data: machines = [] } = useQuery({
+    queryKey: ['machines', agent?.machineIds],
+    queryFn: () => getMachinesByIds(agent?.machineIds || []),
+    enabled: !!agent?.machineIds?.length,
   });
   
-  const { data: processes } = useQuery({
-    queryKey: ['processes', agent?.machineId],
-    queryFn: () => getProcessesByMachineId(agent?.machineId || ''),
-    enabled: !!agent?.machineId,
+  const { data: processes = [] } = useQuery({
+    queryKey: ['processes', agent?.machineIds],
+    queryFn: () => getProcessesByMachineIds(agent?.machineIds || []),
+    enabled: !!agent?.machineIds?.length,
   });
   
   const metricsData = generateMetricsData();
@@ -172,42 +172,38 @@ const AgentDetailPage = () => {
           
           <Card>
             <CardHeader className="pb-2">
-              <CardTitle className="text-lg">Machine</CardTitle>
+              <CardTitle className="text-lg">Machines</CardTitle>
+              <CardDescription>{machines.length} machine(s) assigned</CardDescription>
             </CardHeader>
             <CardContent>
-              {machine ? (
+              {machines.length > 0 ? (
                 <div className="space-y-4">
-                  <div>
-                    <p className="text-sm text-muted-foreground">Name</p>
-                    <p className="font-medium">{machine.name}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-muted-foreground">Status</p>
-                    <div className="flex items-center gap-2">
-                      <span className={`${getStatusColor(machine.status)} h-2.5 w-2.5 rounded-full`}></span>
-                      <span className="capitalize">{machine.status}</span>
+                  {machines.map(machine => (
+                    <div key={machine.id} className="border-b last:border-b-0 pb-3 last:pb-0">
+                      <div className="flex justify-between items-center">
+                        <p className="font-medium">{machine.name}</p>
+                        <div className="flex items-center gap-2">
+                          <span className={`${getStatusColor(machine.status)} h-2.5 w-2.5 rounded-full`}></span>
+                          <span className="capitalize text-sm">{machine.status}</span>
+                        </div>
+                      </div>
+                      <p className="text-sm text-muted-foreground mt-1">{machine.ipAddress}</p>
                     </div>
-                  </div>
-                  <div>
-                    <p className="text-sm text-muted-foreground">IP Address</p>
-                    <p className="font-medium">{machine.ipAddress}</p>
-                  </div>
+                  ))}
                 </div>
               ) : (
                 <div className="text-center py-4">
-                  <p className="text-muted-foreground">Machine not found</p>
+                  <p className="text-muted-foreground">No machines assigned</p>
                 </div>
               )}
             </CardContent>
             <CardFooter>
-              {machine && (
-                <Button variant="outline" asChild className="w-full">
-                  <Link to={`/machines/${machine.id}`}>
-                    <Server className="mr-2 h-4 w-4" />
-                    View Machine
-                  </Link>
-                </Button>
-              )}
+              <Button variant="outline" asChild className="w-full">
+                <Link to="/machines">
+                  <Server className="mr-2 h-4 w-4" />
+                  View All Machines
+                </Link>
+              </Button>
             </CardFooter>
           </Card>
           
@@ -250,9 +246,9 @@ const AgentDetailPage = () => {
             </CardContent>
             <CardFooter>
               <Button variant="outline" asChild className="w-full">
-                <Link to={`/processes/assign?agentId=${agent.id}`}>
+                <Link to="/processes">
                   <Clock className="mr-2 h-4 w-4" />
-                  Schedule Process
+                  View Processes
                 </Link>
               </Button>
             </CardFooter>
